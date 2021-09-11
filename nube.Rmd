@@ -1,0 +1,47 @@
+---
+title: "nube"
+author: "Manuel Toral"
+date: "11/9/2021"
+output: html_document
+---
+
+# Codigo
+
+```{r}
+## Titulo: Nubes de palabras
+## Fecha: 11 de septiembre de 2021
+
+
+# Bibliotecas -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+pacman::p_load(tidyverse, tidytext, wordcloud)
+
+#wordcloud2
+
+
+# Datos -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+huerta <- read_csv("input/w_huerta.csv",
+                   locale = locale(encoding = "LATIN1")) #Encoding para usuarias de Windows
+#  ISO-8859-1 = LATIN1
+
+
+# Conteo de palabras ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+pal_nube <- huerta %>% 
+  unnest_tokens(palabras, verso) %>% 
+  count(palabras, sort = T) %>% 
+  filter(!palabras %in% tm::stopwords("es"))
+
+pal_nube %>% 
+  with(wordcloud(palabras, n, max.words = 100,
+                 random.order = F,
+                 colors = brewer.pal(8, "Reds")))
+  
+
+wordcloud(pal_nube$palabras, pal_nube$n, max.words = 100,
+          random.order = F,
+          colors = brewer.pal(8, "Reds"))
+
+```
+
